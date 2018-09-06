@@ -40,36 +40,19 @@ import os.path
 
 CONF_ROOT = os.path.dirname(__file__)
 
-postgres = env('SENTRY_POSTGRES_HOST') or (env('POSTGRES_PORT_5432_TCP_ADDR') and 'postgres')
-if postgres:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'sentry.db.postgres',
-            'NAME': (
-                env('SENTRY_DB_NAME')
-                or env('POSTGRES_ENV_POSTGRES_USER')
-                or 'postgres'
-            ),
-            'USER': (
-                env('SENTRY_DB_USER')
-                or env('POSTGRES_ENV_POSTGRES_USER')
-                or 'postgres'
-            ),
-            'PASSWORD': (
-                env('SENTRY_DB_PASSWORD')
-                or env('POSTGRES_ENV_POSTGRES_PASSWORD')
-                or ''
-            ),
-            'HOST': postgres,
-            'PORT': (
-                env('SENTRY_POSTGRES_PORT')
-                or ''
-            ),
-            'OPTIONS': {
-                'autocommit': True,
-            },
+DATABASES = {
+    'default': {
+        'ENGINE': 'sentry.db.postgres',
+        'NAME': env('SENTRY_DB_NAME'),
+        'USER': env('SENTRY_DB_USER'),
+        'PASSWORD': env('SENTRY_DB_PASSWORD'),
+        'HOST': 'postgres',
+        'PORT': '5432',
+        'OPTIONS': {
+            'autocommit': True,
         },
-    }
+    },
+}
 
 # You should not change this setting after your database has been created
 # unless you have altered all schemas first
@@ -84,7 +67,7 @@ SENTRY_USE_BIG_INTS = True
 
 # Instruct Sentry that this install intends to be run by a single organization
 # and thus various UI optimizations should be enabled.
-SENTRY_SINGLE_ORGANIZATION = env('SENTRY_SINGLE_ORGANIZATION', True)
+SENTRY_SINGLE_ORGANIZATION = True
 
 #########
 # Redis #

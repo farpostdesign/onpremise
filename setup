@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+source services_names
+
+docker run \
+  --rm \
+  -it \
+  --env-file .envlist \
+  --link $REDIS_DEP:redis \
+  --link $POSTGRES_DEP:postgres \
+  $IMAGE \
+  sentry upgrade

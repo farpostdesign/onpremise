@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source services_names
+
+echo $POSTGRES_DEP

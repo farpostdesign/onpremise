@@ -1,0 +1,5 @@
+IMAGE=sentry-fpd
+NAME=sentry-fpd
+REDIS_DEP=redis-sentry-fpd
+POSTGRES_DEP=postgres95
+

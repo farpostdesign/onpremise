@@ -1,0 +1,50 @@
+#!/bin/bash
+
+set -e
+
+source services_names
+
+docker build --rm -t $IMAGE .
+
+docker stop $NAME "$NAME-cron" "$NAME-worker" $REDIS_DEP || echo "..."
+docker rm $NAME "$NAME-cron" "$NAME-worker" $REDIS_DEP || echo "..."
+
+docker run \
+  --detach \
+  --restart unless-stopped \
+  --name $REDIS_DEP \
+  redis:3.2-alpine
+
+echo 'web'
+docker run \
+  --detach \
+  --restart unless-stopped \
+  --env-file .envlist \
+  --link $REDIS_DEP:redis \
+  --link $POSTGRES_DEP:postgres \
+  -p 9000:9000 \
+  --name $NAME \
+  $IMAGE \
+  run web
+
+echo 'cron'
+docker run \
+  --detach \
+  --restart unless-stopped \
+  --env-file .envlist \
+  --link $REDIS_DEP:redis \
+  --link $POSTGRES_DEP:postgres \
+  --name "$NAME-cron" \
+  $IMAGE \
+  run cron
+
+echo 'worker'
+docker run \
+  --detach \
+  --restart unless-stopped \
+  --env-file .envlist \
+  --link $REDIS_DEP:redis \
+  --link $POSTGRES_DEP:postgres \
+  --name "$NAME-worker" \
+  $IMAGE \
+  run worker
